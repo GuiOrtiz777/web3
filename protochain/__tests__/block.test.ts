@@ -1,35 +1,56 @@
-import {describe, test, expect} from '@jest/globals';
+import {describe, test, expect, beforeAll} from '@jest/globals';
 import Block from '../src/lib/block';
 
 describe("Block tests", () => {
 
+  let genesisBlock: Block;
+
+  beforeAll(() => {
+    genesisBlock = new Block(0, "", "Genesis Block")
+  })
+
   test('Should be valid', () => {
-    const block = new Block(1, "first", 12, '1234');
-    const valid = block.isValid();
-    expect(valid).toEqual(true);
+    const block = new Block(1, genesisBlock.hash, 'block 2');
+    const valid = block.isValid(genesisBlock.hash, genesisBlock.index);
+    expect(valid).toBeTruthy();
+  })
+
+  test('Should NOT be valid (index)', () => {
+    const block = new Block(-1, genesisBlock.hash, "genesis");
+    const valid = block.isValid(genesisBlock.hash, genesisBlock.index);
+    expect(valid).toBeFalsy();
+  })
+
+  test('Should NOT be valid (previousHash)', () => {
+    const block = new Block(1, "abc", "block 2");
+    const valid = block.isValid(genesisBlock.hash, genesisBlock.index);
+    expect(valid).toBeFalsy();
+  })
+
+  test('Should NOT be valid (timestamp)', () => {
+    const block = new Block(1, genesisBlock.hash, "block 2");
+    block.timestamp = -1;
+    block.hash = block.getHash();
+    const valid = block.isValid(genesisBlock.hash, genesisBlock.index);
+    expect(valid).toBeFalsy();
   })
 
   test('Should NOT be valid (hash)', () => {
-    const block = new Block(1, "", 32, "");
-    const valid = block.isValid();
+    const block = new Block(1, genesisBlock.hash, "block 2");
+    block.hash = "";
+    const valid = block.isValid(genesisBlock.hash, genesisBlock.index);
+    expect(valid).toBeFalsy();
+  })
+
+  test('Should NOT be valid (data)', () => {
+    const block = new Block(1, genesisBlock.hash, "");
+    const valid = block.isValid(genesisBlock.hash, genesisBlock.index);
     expect(valid).toBeFalsy();
   })
 
   test('Should NOT be valid (index)', () => {
-    const block = new Block(-1, "first", 54, "genesis");
-    const valid = block.isValid();
-    expect(valid).toBeFalsy();
-  })
-
-  test('Should NOT be valid (nonce)', () => {
-    const block = new Block(2, "first", -1, "genesis");
-    const valid = block.isValid();
-    expect(valid).toBeFalsy();
-  })
-
-  test('Should NOT be valid (prevHash)', () => {
-    const block = new Block(2, "first", 54, "");
-    const valid = block.isValid();
+    const block = new Block(-1, genesisBlock.hash, "block 2");
+    const valid = block.isValid(genesisBlock.hash, genesisBlock.index);
     expect(valid).toBeFalsy();
   })
 })

@@ -1,35 +1,54 @@
+import sha256 from "crypto-js/sha256";
+
 /**
  * Class Block
  */
 export default class Block {
   index: number;
+  timestamp: number;
   hash: string;
-  nonce: number;
-  prevHash: string;
+  previousHash: string;
+  data: string;
+  // nonce: number;
 
   /**
    * Creates a new Block
    * @param index The block index in blockcian
-   * @param hash The block hash in blockcian 
-   * @param nonce The block nonce in blockcian
-   * @param prevHash The block prevHash in blockcian
+   * @param previousHash The block previousHash in blockcian
+   * @param data The block data in blockcian 
    */
-  constructor(index: number, hash: string, nonce: number, prevHash: string) {
+  constructor(index: number, previousHash: string, data: string) {
     this.index = index;
-    this.hash = hash;
-    this.nonce = nonce;
-    this.prevHash = prevHash;
+    this.timestamp = Date.now();
+    this.previousHash = previousHash;
+    this.data = data;
+    this.hash = this.getHash();
+    // this.nonce = nonce;
   }
 
+  /**
+   * Generator sha256 of the data block
+   * @returns Returns a hash with a concatenation of the block data
+   */
+  getHash(): string {
+    return sha256(
+      this.index +
+      this.data +
+      this.timestamp +
+      this.previousHash
+    ).toString();
+  }
+  
   /**
    * Validates the block
    * @returns Returns true if the block is valid
    */
-  isValid(): boolean {
-    if(this.index < 0) return false;
-    if (!this.hash) return false;
-    if (this.nonce < 0) return false;
-    if (!this.prevHash) return false;
+  isValid(previousHash: string, previousIndex: number): boolean {
+    if (previousIndex !== this.index -1) return false;
+    if (this.hash !== this.getHash()) return false;
+    if (!this.data) return false;
+    if (this.timestamp < 1) return false;
+    if (this.previousHash !== previousHash) return false;
     return true;
   }
 }
