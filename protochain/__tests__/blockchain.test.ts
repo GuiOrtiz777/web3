@@ -11,7 +11,7 @@ describe("Blockchain tests", () => {
 
   test('Should be Valid (genesis)', () => {
     const blockchain = new Blockchain();
-    expect(blockchain.isValid()).toEqual(true);
+    expect(blockchain.isValid().sucess).toEqual(true);
   })
 
   test('Should be Valid (two blocks)', () => {
@@ -21,7 +21,7 @@ describe("Blockchain tests", () => {
         "Block 2"
       )
     )
-    expect(blockchain.isValid()).toEqual(true);
+    expect(blockchain.isValid().sucess).toEqual(true);
   })
 
   test('Should NOT be Valid', () => {
@@ -32,7 +32,7 @@ describe("Blockchain tests", () => {
       )
     )
     blockchain.blocks[1].data = "A transfer to B"
-    expect(blockchain.isValid()).toEqual(false);
+    expect(blockchain.isValid().sucess).toEqual(false);
   })
 
   test('Should add block', () => {
@@ -42,7 +42,7 @@ describe("Blockchain tests", () => {
         "Block 2"
       )
     )
-    expect(result).toEqual(true);
+    expect(result.sucess).toEqual(true);
   })
 
   test('Should NOT add block', () => {
@@ -50,7 +50,7 @@ describe("Blockchain tests", () => {
     const result = blockchain.addBlock(
       new Block(-1, blockchain.blocks[0].hash, "Block 2")
     )
-    expect(result).toEqual(false);
+    expect(result.sucess).toEqual(false);
   })
 
   test('Should has correct prevHash in secund block', () => {

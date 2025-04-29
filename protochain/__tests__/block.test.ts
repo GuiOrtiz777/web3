@@ -12,45 +12,45 @@ describe("Block tests", () => {
   test('Should be valid', () => {
     const block = new Block(1, genesisBlock.hash, 'block 2');
     const valid = block.isValid(genesisBlock.hash, genesisBlock.index);
-    expect(valid).toBeTruthy();
+    expect(valid.sucess).toBeTruthy();
   })
 
   test('Should NOT be valid (index)', () => {
     const block = new Block(-1, genesisBlock.hash, "genesis");
     const valid = block.isValid(genesisBlock.hash, genesisBlock.index);
-    expect(valid).toBeFalsy();
+    expect(valid.sucess).toBeFalsy();
   })
 
   test('Should NOT be valid (previousHash)', () => {
-    const block = new Block(1, "abc", "block 2");
+    const block = new Block(1, "ab", "block 2");
     const valid = block.isValid(genesisBlock.hash, genesisBlock.index);
-    expect(valid).toBeFalsy();
+    expect(valid.sucess).toBeFalsy();
   })
 
   test('Should NOT be valid (timestamp)', () => {
     const block = new Block(1, genesisBlock.hash, "block 2");
-    block.timestamp = -1;
+    block.timestamp = -2;
     block.hash = block.getHash();
     const valid = block.isValid(genesisBlock.hash, genesisBlock.index);
-    expect(valid).toBeFalsy();
+    expect(valid.sucess).toBeFalsy();
   })
 
   test('Should NOT be valid (hash)', () => {
     const block = new Block(1, genesisBlock.hash, "block 2");
     block.hash = "";
     const valid = block.isValid(genesisBlock.hash, genesisBlock.index);
-    expect(valid).toBeFalsy();
+    expect(valid.sucess).toBeFalsy();
   })
 
   test('Should NOT be valid (data)', () => {
     const block = new Block(1, genesisBlock.hash, "");
     const valid = block.isValid(genesisBlock.hash, genesisBlock.index);
-    expect(valid).toBeFalsy();
+    expect(valid.sucess).toBeFalsy();
   })
 
   test('Should NOT be valid (index)', () => {
     const block = new Block(-1, genesisBlock.hash, "block 2");
     const valid = block.isValid(genesisBlock.hash, genesisBlock.index);
-    expect(valid).toBeFalsy();
+    expect(valid.sucess).toBeFalsy();
   })
 })
